@@ -36,7 +36,7 @@ class MySqlConnection extends BaseMySqlConnection
         return $this;
     }
 
-    protected function proxyRun($query, $bindings, Closure $callback)
+    public function proxyRun($query, $bindings, Closure $callback)
     {
         return parent::run($query, $bindings, $callback->bindTo($this));
     }

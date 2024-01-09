@@ -19,7 +19,7 @@ class DatabaseManager extends BaseDatabaseManager
         parent::__construct($app, $factory);
 
         foreach (config('database.connections') as $name => $connection) {
-            $params = $connection['params'] ?? [];
+            $params = $connection['pool'] ?? [];
             $params['databaseManager'] = $this;
             $params['name'] = $name;
             $this->pools[$name] = new Pool(...$params);
