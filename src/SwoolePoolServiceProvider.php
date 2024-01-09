@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Database\Connection;
 use Illuminate\Support\ServiceProvider;
 
-class SwooleDBManagerServiceProvider extends ServiceProvider
+class SwoolePoolServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
