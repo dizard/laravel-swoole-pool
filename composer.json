@@ -1,0 +1,19 @@
+{
+    "name": "la/swoole-connection-manager",
+    "description": "A Swoole connection manager for Laravel",
+    "version": "0.1.0",
+    "keywords": ["laravel", "connection", "pooling", "database", "php", "async", "concurrency", "coroutine"],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2",
+        "laravel/framework": ">=10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "la\\ConnectionManager\\": "src/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.19"
+    }
+}
