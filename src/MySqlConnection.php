@@ -13,8 +13,6 @@ use Swoole\Coroutine;
 
 class MySqlConnection extends BaseMySqlConnection
 {
-    public ConnectionState $state = ConnectionState::NOT_IN_USE;
-
     /**
      * The database manager instance.
      *

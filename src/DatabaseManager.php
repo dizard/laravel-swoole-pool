@@ -26,14 +26,6 @@ class DatabaseManager extends BaseDatabaseManager
         }
     }
 
-    public function getIdleConnections(string $name, int $id=null): array
-    {
-        return array_filter(
-            $this->connections[$name] ?? [],
-            static fn (MySqlConnection $connection) => $connection->state === ConnectionState::NOT_IN_USE && ($connection->coId === $id || $connection->coId === null)
-        );
-    }
-
     public function connection($name = null): ConnectionInterface
     {
         [$database, $type] = $this->parseConnectionName($name);
