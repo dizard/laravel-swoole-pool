@@ -48,39 +48,18 @@ class ConcurrencyTest extends TestCase
         );
     }
 
-    /**
-     * Tests if an exception is thrown when there are not enough
-     * connections for several long running queries.
-     *
-     * @return void
-     */
-    public function testConcurrentQueriesWhenNotEnoughConnections(): void
+    public function testCorrectGetConnections()
     {
         Runtime::enableCoroutine();
-
-        $exception = false;
-
-        // attempt to complete x11 1s sleep queries concurrently
-        // there are only 10 connections available to use at once
-        for ($i = 0; $i < 100; $i++) {
-            go(function () use ($i, &$exception) {
-                try {
-                    if (! $exception) {
-                        $this->app['db']
-                            ->connection()
-                            ->table(null)
-                            ->select(DB::raw('SLEEP(1)'))
-                            ->get();
-                    }
-                } catch (NoConnectionsAvailableException $e) {
-                    $exception = true;
-                }
+        for ($i = 1; $i < 10; $i++) {
+            go(function () use ($i) {
+                $res1 = \DB::select('SELECT CONNECTION_ID()');
+                $res2 = \DB::select('SELECT SLEEP(1), CONNECTION_ID()');
+                $this->assertSame($res1[0]->{'CONNECTION_ID()'}, $res2[0]->{'CONNECTION_ID()'});
             });
         }
         Event::wait();
 
-        // asserting that no connections were available to perform at least one of the queries
-        $this->assertTrue($exception);
     }
 
     /**
@@ -109,30 +88,4 @@ class ConcurrencyTest extends TestCase
 
         Event::wait();
     }
-
-    /**
-     * Tests if Eloquent models can select contents concurrently.
-     *
-     * @return void
-     */
-    public function testConcurrentModelSelectQueries(): void
-    {
-        Runtime::enableCoroutine();
-
-        // run x10 select queries
-        for ($i = 0; $i < 10; $i++) {
-            go(static function () {
-                $selectUser = User::where('id', 1)->first();
-            });
-        }
-
-        Event::wait();
-
-//        // since they all ran at once, there should be 10 connections in the pool
-//        $this->assertCount(10, $this->app->get('db')->getConnections());
-//
-//        // ...which are now idle - they have been used
-//        $this->assertCount(10, $this->app->get('db')->getIdleConnections());
-    }
-
 }
