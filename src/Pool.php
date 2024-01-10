@@ -40,12 +40,18 @@ class Pool
         if (array_key_exists($cId, $this->coroutineConnections)) {
             return $this->coroutineConnections[$cId];
         }
+        // если мы не в корутине и рантайме
+        if ($cId === -1) {
+            return $this->coroutineConnections[$cId] = $this->databaseManager->createConnection($this->name);
+        }
+
 
         if ($this->currentConnections < $this->max_connections) {
             $connection = $this->databaseManager->createConnection($this->name);
             $this->currentConnections++;
             $this->pool->push($connection);
         }
+
 
         if (($connection = $this->pool->pop($this->wait_timeout))===false) {
             throw new Exceptions\NoConnectionsAvailableException();
