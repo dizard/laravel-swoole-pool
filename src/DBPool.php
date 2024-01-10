@@ -7,7 +7,7 @@ use la\ConnectionManager\Exceptions\NoConnectionsAvailableException;
 use Swoole\Coroutine\Channel;
 use Swoole\Coroutine;
 
-class Pool
+class DBPool
 {
     protected array $coroutineConnections = [];
     protected array $connections = [];

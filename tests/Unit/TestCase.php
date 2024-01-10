@@ -2,18 +2,21 @@
 
 declare(strict_types=1);
 
-namespace X\LaravelConnectionPool\Tests;
+namespace la\ConnectionManager\Tests\Unit;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use la\ConnectionManager\PoolServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use Swoole\Event;
 use Swoole\Runtime;
 use la\ConnectionManager\DatabaseManager;
-use la\ConnectionManager\MySqlPoolServiceProvider;
 
 class TestCase extends BaseTestCase
 {
+    /**
+     * @throws \ErrorException
+     */
     protected function setUp(): void
     {
         Runtime::enableCoroutine();
@@ -23,7 +26,7 @@ class TestCase extends BaseTestCase
 
             Schema::dropIfExists('users');
 
-            Schema::create('users', function (Blueprint $table) {
+            Schema::create('users', static function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
             });
@@ -32,21 +35,17 @@ class TestCase extends BaseTestCase
         Event::wait();
     }
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
-        return [MySqlPoolServiceProvider::class];
+        return [PoolServiceProvider::class];
     }
 
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
-        // Opt for X\LaravelConnectionPool\DatabaseManager usage
         $app->singleton('db', fn ($app) => new DatabaseManager($app, $app['db.factory']));
 
-        $connections = [];
-
-        // 20 mysql connections titled from "mysql-1" to "mysql-20"
-        for($i = 0; $i < 20; $i++) {
-            $connections['mysql-'.($i+1)] = [
+        $connections = [
+            'mysql' => [
                 'driver'    => 'mysql',
                 'host'      => env('DB_HOST'),
                 'port'      => env('DB_PORT'),
@@ -55,18 +54,16 @@ class TestCase extends BaseTestCase
                 'password'  => env('DB_PASS'),
                 'charset'   => 'utf8',
                 'collation' => 'utf8_unicode_ci',
-                'prefix'    => ''
-            ];
-        }
-        $app['config']->set('database.default', 'mysql-1');
+                'prefix'    => '',
+                'pool' => [
+                    'min_connections' => 1,
+                    'max_connections' => 10,
+                    'connect_timeout' => 10.0,
+                    'wait_timeout' => 3.0,
+                ]
+            ]
+        ];
+        $app['config']->set('database.default', 'mysql');
         $app['config']->set('database.connections', $connections);
-
-        // set the min & max connections allowed
-        $app['db']
-            ->setMinConnections(2)
-            ->setMaxConnections(10);
-
-        // Create instances of each defined connection
-        $app['db']->makeInitialConnections();
     }
 }

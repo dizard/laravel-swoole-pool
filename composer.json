@@ -1,19 +1,54 @@
 {
     "name": "la/swoole-connection-manager",
-    "description": "A Swoole connection manager for Laravel",
+    "description": "Swoole connection manager for Laravel",
     "version": "0.1.0",
-    "keywords": ["laravel", "connection", "pooling", "database", "php", "async", "concurrency", "coroutine"],
+    "keywords": [
+        "laravel",
+        "connection",
+        "pooling",
+        "database",
+        "php",
+        "async",
+        "concurrency",
+        "coroutine"
+    ],
     "license": "MIT",
     "require": {
         "php": ">=8.2",
         "laravel/framework": ">=10.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.19",
+        "swoole/ide-helper": "^5.1",
+        "phpunit/phpunit": "*",
+        "ext-pdo": "*",
+        "ext-bcmath": "*"
     },
     "autoload": {
         "psr-4": {
             "la\\ConnectionManager\\": "src/"
         }
     },
-    "require-dev": {
-        "orchestra/testbench": "^8.19"
+    "autoload-dev": {
+        "psr-4": {
+            "la\\ConnectionManager\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve"
+        ]
     }
 }
