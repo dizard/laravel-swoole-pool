@@ -15,7 +15,8 @@
     "license": "MIT",
     "require": {
         "php": ">=8.2",
-        "laravel/framework": ">=10.0"
+        "laravel/framework": ">=10.0",
+        "ext-swoole": "*"
     },
     "require-dev": {
         "orchestra/testbench": "^8.19",
