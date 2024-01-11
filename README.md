@@ -4,6 +4,10 @@ This package provides a DB pool manager for Laravel 10+ and Swoole
 ## Supported Database : MySQL, PostgreSQL, SQLite, SQL Server
 
 ## Installation :
+```bash
+composer require la/swoole-connection-manager
+```
+
 
 add service provider to config/app.php
 ```php
