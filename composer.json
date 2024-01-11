@@ -12,7 +12,7 @@
         "concurrency",
         "coroutine"
     ],
-    "license": "GNU General Public License (GPL)",
+    "license": "MIT",
     "require": {
         "php": ">=8.2",
         "laravel/framework": ">=10.0",
