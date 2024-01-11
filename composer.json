@@ -1,7 +1,7 @@
 {
     "name": "la/swoole-connection-manager",
     "description": "Swoole connection manager for Laravel",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "keywords": [
         "laravel",
         "connection",
@@ -16,13 +16,13 @@
     "require": {
         "php": ">=8.2",
         "laravel/framework": ">=10.0",
-        "ext-swoole": "*"
+        "ext-swoole": "*",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "orchestra/testbench": "^8.19",
         "swoole/ide-helper": "^5.1",
         "phpunit/phpunit": "*",
-        "ext-pdo": "*",
         "ext-bcmath": "*"
     },
     "autoload": {
@@ -51,5 +51,7 @@
             "@build",
             "@php vendor/bin/testbench serve"
         ]
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
